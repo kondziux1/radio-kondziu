@@ -3,14 +3,24 @@
 #include "Espradio.h"
 
 Audio audio = new Audio();
-String stations[];
+String stations[15] = {
+	"servidor32-4.brlogic.com:8572/live",
+	"ic1.smcdn.pl/6030-1.mp3",
+	"www.surfmusic.de/m3u/100-5-das-hitradio,4529.m3u",
+	"stream.1a-webradio.de/deutsch/mp3-128/vtuner-1a",
+	"mp3.ffh.de/radioffh/hqlivestream.aac", //  128k aac
+	"www.antenne.de/webradio/antenne.m3u",
+	"listen.rusongs.ru/ru-mp3-128",
+	"edge.audio.3qsdn.com/senderkw-mp3",
+	"macslons-irish-pub-radio.com/media.asx"
+};
 
 Espradio::Espradio(uint8_t I2S_BCLK, uint8_t I2S_LRC, uint8_t I2S_DOUT){
     audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
 }
 
 Espradio::~Espradio(){
-    
+    audio.~Audio();
 }
 
 //**************************************************************************************************
@@ -45,11 +55,11 @@ String subspk[] = {"mute"};
 String subvol[] = {"full", "low"};
 String subradio[] = {"put", "get", "set", "rm", "play"};
 
-int Espradio::radioplaypos(int pos){
+int Espradio::playpos(int pos){
 	return 0;
 }
 
-int Espradio::radioplay(String url)
+int Espradio::play(String url)
 {
 	audio.stopSong();
 	audio.connecttohost(url.c_str());
@@ -58,19 +68,19 @@ int Espradio::radioplay(String url)
 	return 0;
 }
 
-int Espradio::radiorm(int pos)
+int Espradio::rm(int pos)
 {
 	stations[pos] = "";
 	return 0;
 }
 
-int Espradio::radioset(int pos, String url)
+int Espradio::set(int pos, String url)
 {
 	stations[pos] = url;
 	return 0;
 }
 
-int Espradio::radioput(String url)
+int Espradio::put(String url)
 {
 	for (int x = 0; x < stations->length(); x++)
 	{
@@ -83,7 +93,7 @@ int Espradio::radioput(String url)
 	return 1;
 }
 
-String Espradio::radioget(int pos = 0)
+String Espradio::get(int pos)
 {
 	if (pos != 0)
 	{
@@ -152,7 +162,7 @@ int Espradio::readSerial()
 	return 0;
 }
 
-int Espradio::sendSerial(String message, bool nl = 1)
+int Espradio::sendSerial(String message, bool nl)
 {
 	if (nl)
 	{
